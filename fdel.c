@@ -7,16 +7,12 @@ char * headname = "head.html";
 char * footname = "footer.html";
 int cgiMain()
 {
-  FILE * fd;
+FILE * fd;
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
 
-	char name[32] = "\0";
-	char age[16] = "\0";
 	char stuId[32] = "\0";
-	char tel[32]="\0";
-	char sex[32]="\0";
 	int status = 0;
-	char ch;
+  char ch;
 	if(!(fd = fopen(headname, "r"))){
 		fprintf(cgiOut, "Cannot open file, %s\n", headname);
 		return -1;
@@ -30,20 +26,6 @@ int cgiMain()
   fclose(fd);
 
 
-	status = cgiFormString("name",  name, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get name error!\n");
-		return 1;
-	}
-
-	status = cgiFormString("age",  age, 16);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get age error!\n");
-		return 1;
-	}
-
 	status = cgiFormString("stuId",  stuId, 32);
 	if (status != cgiFormSuccess)
 	{
@@ -51,21 +33,6 @@ int cgiMain()
 		return 1;
 	}
 
-	status = cgiFormString("tel",  tel, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get tel error!\n");
-		return 1;
-	}
-
-	status = cgiFormString("sex",  sex, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sex error!\n");
-		return 1;
-	}
-
-	//fprintf(cgiOut, "name = %s, age = %s, stuId = %s\n", name, age, stuId);
 
 	int ret;
 	char sql[128] = "\0";
@@ -88,8 +55,7 @@ int cgiMain()
 		return -1;
 	}
 
-
-	sprintf(sql, "update student set name='%s', age= %d, tel=%d, sex='%s' where id = %d and student.sta = 1", name, atoi(age), atoi(tel), sex, atoi(stuId));
+  sprintf(sql, "update student set sta=0 where id = %d", atoi(stuId));
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -98,8 +64,8 @@ int cgiMain()
 	}
 
 
-
-	fprintf(cgiOut, "update student ok!\n");
+	fprintf(cgiOut, "fdel student ok!\n");
 	mysql_close(db);
+
 	return 0;
 }
